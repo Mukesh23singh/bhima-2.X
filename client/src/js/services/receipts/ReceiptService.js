@@ -1,7 +1,7 @@
 angular.module('bhima.services')
 .service('ReceiptService', ReceiptService);
 
-ReceiptService.$inject = ['$http', 'util' , 'LanguageService'];
+ReceiptService.$inject = ['$http', 'util' , 'LanguageService', 'AppCache'];
 
 /**
  * Receipts Service
@@ -18,13 +18,18 @@ ReceiptService.$inject = ['$http', 'util' , 'LanguageService'];
  *
  * @module services/receipts/ReciptService
  */
-function ReceiptService($http, util, Language) {
+function ReceiptService($http, util, Language, AppCache) {
   var service = this;
   var renderers = {
     PDF  : 'pdf',
     HTML : 'html',
     JSON : 'json'
   };
+
+  var cache = new AppCache('receipts');
+
+  service.posReceipt = cache.posReceipt || '0';
+  service.simplified = cache.simplified || '0';
 
   // expose data
   service.renderers = renderers;
@@ -37,6 +42,9 @@ function ReceiptService($http, util, Language) {
   service.voucher = voucher;
   service.transaction = transaction;
   service.payroll = payroll;
+
+  service.setPosReceipt = setPosReceipt;
+  service.setSimplified = setSimplified;
 
   /**
    * @method fetch
@@ -77,12 +85,15 @@ function ReceiptService($http, util, Language) {
    * @return {Promise}         Eventually returns report object from server
    */
   function invoice(uuid, options) {
+    options.posReceipt = service.posReceipt;
     var route = '/reports/finance/invoices/'.concat(uuid);
     return fetch(route, options);
   }
 
   // print the patient card
   function patient(uuid, options) {
+    options.posReceipt = service.posReceipt;
+    options.simplified = service.simplified;
     var route ='/reports/medical/patients/'.concat(uuid);
     return fetch(route, options);
   }
@@ -95,6 +106,7 @@ function ReceiptService($http, util, Language) {
 
   // print a cash (point-of-sale) receipt
   function cash(uuid, options) {
+    options.posReceipt = service.posReceipt;
     var route = '/reports/finance/cash/'.concat(uuid);
     return fetch(route, options);
   }
@@ -114,6 +126,14 @@ function ReceiptService($http, util, Language) {
   // TBD - is this really necessary to have as a separate receipt?
   function payroll(uuid, options) {
     /* noop */
+  }
+
+  function setPosReceipt(posReceiptEnabled) {
+    service.posReceipt = cache.posReceipt = posReceiptEnabled;
+  }
+
+  function setSimplified(simplifiedEnabled) {
+    service.simplified = cache.simplified = simplifiedEnabled;
   }
 
   return service;

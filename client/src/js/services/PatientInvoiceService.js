@@ -19,6 +19,7 @@ function PatientInvoiceService(Modal, util, Session, Api) {
   service.openSearchModal = openSearchModal;
   service.formatFilterParameters = formatFilterParameters;
   service.openCreditNoteModal = openCreditNoteModal;
+  service.balance = balance;
 
   /**
    * @method create
@@ -52,6 +53,21 @@ function PatientInvoiceService(Modal, util, Session, Api) {
     return Api.create.call(this, { invoice: invoice });
   }
 
+  /**
+   * @method balance
+   *
+   * @description
+   * This method returns the balance on an invoice due to a debtor.
+   *
+   * @param {String} uuid - the invoice uuid
+   * @param {String} debtorUuid - the amount due to the debtor
+   */
+  function balance(uuid) {
+    var url = '/invoices/'.concat(uuid).concat('/balance');
+    return this.$http.get(url)
+      .then(this.util.unwrapHttpResponse);
+  }
+
   // utility methods
 
   // remove the source items from invoice items - if they exist
@@ -71,8 +87,9 @@ function PatientInvoiceService(Modal, util, Session, Api) {
     return Modal.open({
       templateUrl : 'partials/patient_invoice/registry/search.modal.html',
       size : 'md',
-      animation : true,
+      animation : false,
       keyboard  : false,
+      backdrop : 'static',
       controller : 'InvoiceRegistrySearchModalController as ModalCtrl',
       resolve: {
         filters : function filtersProvider() { return filters; }
@@ -100,7 +117,6 @@ function PatientInvoiceService(Modal, util, Session, Api) {
    */
   function formatFilterParameters(params) {
     var columns = [
-      { field: 'is_distributable', displayName: 'FORM.LABELS.DISTRIBUTABLE' },
       { field: 'service_id', displayName: 'FORM.LABELS.SERVICE' },
       { field: 'user_id', displayName: 'FORM.LABELS.USER' },
       { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },

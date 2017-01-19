@@ -16,7 +16,7 @@
       <div class="col-xs-6 text-right">
         <h3 style="margin: 0px;">
           <span class="text-uppercase">{{translate 'FORM.LABELS.INVOICE'}}</span> <br>
-          <strong>ID: {{reference}}</strong> <br>
+          <strong>{{reference}}</strong> <br>
           <small>{{date date}}</small> <br>
         </h3>
       </div>
@@ -34,7 +34,7 @@
         <span class="text-capitalize">{{translate 'FORM.LABELS.INVOICE'}}</span>: <strong>{{reference}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.AMOUNT'}}</span>: <strong>{{currency cost metadata.enterprise.currency_id}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date date}} <br>
-        <span class="text-capitalize">{{translate "REPORT.PRODUCED_BY"}}</span>: {{user.display_name}}
+        <span class="text-capitalize">{{translate "TABLE.COLUMNS.CREATED_BY"}}</span>: {{display_name}}
       </div>
     </div>
   </header>

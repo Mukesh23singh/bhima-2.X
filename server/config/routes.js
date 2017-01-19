@@ -42,6 +42,7 @@ const patients       = require('../controllers/medical/patients');
 const patientGroups  = require('../controllers/medical/patientGroups');
 const snis           = require('../controllers/medical/snis');
 const medicalReports = require('../controllers/medical/reports');
+const diagnoses      = require('../controllers/medical/diagnoses');
 
 // stock and inventory routes
 const inventory            = require('../controllers/inventory');
@@ -357,6 +358,7 @@ exports.configure = function configure(app) {
   app.post('/invoices', patientInvoice.create);
   app.get('/invoices/search', patientInvoice.search);
   app.get('/invoices/:uuid', patientInvoice.detail);
+  app.get('/invoices/:uuid/balance', patientInvoice.balance);
 
   // route for invoice Report
 
@@ -366,7 +368,7 @@ exports.configure = function configure(app) {
   app.get('/reports/medical/patients/:uuid/checkins', medicalReports.patientCheckins);
 
   app.get('/reports/inventory/purchases/:uuid', inventoryReports.receipts.purchases);
-  app.get('/reports/inventory/items', inventory.getInventoryItemReport);
+  app.get('/reports/inventory/items', inventoryReports.reports.prices);
 
   app.get('/reports/finance/invoices', financeReports.invoices.report);
   app.get('/reports/finance/invoices/:uuid', financeReports.invoices.receipt);
@@ -402,6 +404,7 @@ exports.configure = function configure(app) {
   app.delete('/patients/groups/:uuid', patientGroups.remove);
 
   app.get('/patients/search', patients.search);
+  app.get('/patients/visits', patients.visits.list);
 
   // Patients API
   app.get('/patients', patients.list);
@@ -416,18 +419,27 @@ exports.configure = function configure(app) {
   app.get('/patients/:uuid/services', patients.billingServices);
   app.get('/patients/:uuid/subsidies', patients.subsidies);
 
-
   app.get('/patients/:uuid/documents', patients.documents.list);
   app.post('/patients/:uuid/documents', upload.middleware('docs', 'documents'), patients.documents.create);
   app.delete('/patients/:uuid/documents/all', patients.documents.deleteAll);
   app.delete('/patients/:uuid/documents/:documentUuid', patients.documents.delete);
   app.post('/patients/:uuid/pictures', upload.middleware('pics', 'pictures'), patients.pictures.set);
 
-  app.get('/patients/:uuid/visits', patients.checkin.list);
-  app.post('/patients/:uuid/checkin', patients.checkin.create);
-  app.get('/patients/:uuid/invoices/latest', patients.latestInvoice);
+  app.get('/patients/visits/:uuid', patients.visits.detail);
+  app.get('/patients/:patientUuid/visits/:uuid', patients.visits.detail);
+  app.get('/patients/:uuid/visits', patients.visits.listByPatient);
+  app.post('/patients/:uuid/visits/admission', patients.visits.admission);
+  app.post('/patients/:uuid/visits/discharge', patients.visits.discharge);
 
+  // misc patients financial routes
+  app.get('/patients/:uuid/invoices/latest', patients.latestInvoice);
   app.get('/patients/:uuid/finance/balance', financialPatient.balance);
+
+  // Barcode API
+  app.get('/barcode/:key', report.barcodeLookup);
+
+  // redirect the request directly to the relevent client document
+  app.get('/barcode/redirect/:key', report.barcodeRedirect);
 
   // Debtors API
   /** @deprecated `/debtors/groups` please use `/debtor_groups` at the client side */
@@ -575,4 +587,5 @@ exports.configure = function configure(app) {
   app.get('/finance/cashflow', financeReports.cashflow.report);
   app.get('/finance/incomeExpense', financeReports.incomeExpense.report);
 
+  app.get('/diagnoses', diagnoses.list);
 };

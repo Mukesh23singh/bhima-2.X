@@ -11,6 +11,7 @@
     "lint": "./node_modules/.bin/jshint server/ && ./node_modules/.bin/jshint client/src/js/ && ./node_modules/.bin/jshint client/src/partials/",
     "test:ends": "./sh/test-ends.sh",
     "test:integration": "./sh/integration-tests.sh",
+    "build" : "./node_modules/.bin/gulp build",
     "app_windows": "gulp build && cd bin && set NODE_ENV=production && node server/app.js",
     "dev_windows": "gulp build && cd bin && set NODE_ENV=development && node server/app.js",
     "watch": "./node_modules/.bin/gulp watch-client"
@@ -47,6 +48,7 @@
     "express-session": "^1.14.1",
     "helmet": "^3.1.0",
     "ioredis": "^2.3.1",
+    "json-2-csv": "^2.1.0",
     "lodash": "^4.16.2",
     "mkdirp": "^0.5.1",
     "moment": "^2.15.0",

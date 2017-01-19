@@ -357,6 +357,9 @@ function constantConfig() {
       ROW_HIGHLIGHT_FLAG : '_highlight',
       ROW_INVALID_FLAG : '_invalid'
     },
+    barcodes : {
+      LENGTH : 10
+    },
     transactionType : {
       GENERIC_INCOME     : 1,
       CASH_PAYMENT       : 2,
@@ -375,6 +378,9 @@ function constantConfig() {
       AGED_DEBTOR : 'AGED_DEBTOR',
       CASHFLOW : 'CASHFLOW',
       INCOME_EXPENSE : 'INCOME_EXPENSE'
+    },
+    precision: {
+      MAX_DECIMAL_PRECISION : 4
     }
   };
 }
